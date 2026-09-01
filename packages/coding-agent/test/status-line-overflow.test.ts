@@ -150,7 +150,10 @@ describe("status line session accent", () => {
 
 	// Computed lazily: `theme` is assigned by initTheme() in beforeAll, after module evaluation.
 	const accentAnsi = (): string => {
-		const ansi = getSessionAccentAnsi(getSessionAccentHex("Named session", theme.sessionAccentInputs));
+		const ansi = getSessionAccentAnsi(
+			getSessionAccentHex("Named session", theme.sessionAccentInputs),
+			theme.colorMode,
+		);
 		if (!ansi) throw new Error("expected a session accent ANSI sequence for the test theme");
 		return ansi;
 	};

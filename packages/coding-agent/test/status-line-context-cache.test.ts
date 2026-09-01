@@ -496,7 +496,10 @@ describe("StatusLineComponent context breakdown", () => {
 			expect(speculationIndex).toBeLessThan(compactionIndex);
 			expect(nerd).not.toContain("╎");
 			expect(nerd).not.toContain("┃");
-			const expectedDimmed = getSessionAccentAnsi(adjustHsv(theme.getColorHex("borderAccent"), { s: 0.7, v: 0.75 }));
+			const expectedDimmed = getSessionAccentAnsi(
+				adjustHsv(theme.getColorHex("borderAccent"), { s: 0.7, v: 0.75 }),
+				theme.colorMode,
+			);
 			expect(border).toContain(`${expectedDimmed}󰁨`);
 			expect(border).not.toContain(`${theme.getFgAnsi("warning")}󰁨`);
 			await setSymbolPreset("unicode");

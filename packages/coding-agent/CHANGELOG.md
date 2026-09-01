@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed status and composer colors turning into solid accent-colored backgrounds in Terminal.app versions without 24-bit color support.
+
 ## [18.1.1] - 2026-09-01
 
 ### Fixed

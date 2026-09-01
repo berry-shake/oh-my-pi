@@ -1,7 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { getThemeByName } from "@oh-my-pi/pi-coding-agent/modes/theme/theme";
+import { detectColorMode } from "../src/modes/theme/color";
 
-import { getSessionAccentHex, type SessionAccentTheme } from "@oh-my-pi/pi-coding-agent/utils/session-color";
+import {
+	getSessionAccentAnsi,
+	getSessionAccentHex,
+	type SessionAccentTheme,
+} from "@oh-my-pi/pi-coding-agent/utils/session-color";
 import { hexToOklch, oklchCusp, relativeLuminance } from "@oh-my-pi/pi-utils";
 
 const lum = (hex: string): number => relativeLuminance(hex) ?? 0;
@@ -135,6 +140,17 @@ describe("getSessionAccentHex", () => {
 				lum(getSessionAccentHex(name, onDark())) + 1e-9,
 			);
 		}
+	});
+});
+
+describe("getSessionAccentAnsi", () => {
+	it("uses indexed SGR on macOS Terminal.app", () => {
+		const mode = detectColorMode({ TERM_PROGRAM: "Apple_Terminal", TERM: "xterm-256color" });
+		expect(getSessionAccentAnsi("#9a0100", mode)).toBe("\x1b[38;5;88m");
+	});
+
+	it("preserves 24-bit SGR on truecolor terminals", () => {
+		expect(getSessionAccentAnsi("#9a0100", "truecolor")).toBe("\x1b[38;2;154;1;0m");
 	});
 });
 

@@ -837,7 +837,7 @@ export class StatusLineComponent implements Component {
 			this.#startBrandFadeTimer();
 		}
 		const hex = this.#sampleBrandHex(working ? workingHex : idleHex, now);
-		return getSessionAccentAnsi(hex) ?? theme.getFgAnsi(working ? "accent" : "dim");
+		return getSessionAccentAnsi(hex, theme.colorMode) ?? theme.getFgAnsi(working ? "accent" : "dim");
 	}
 
 	/**
@@ -2185,7 +2185,7 @@ export class StatusLineComponent implements Component {
 		const sessionName =
 			effectiveSettings.sessionAccent !== false ? this.session.sessionManager?.getSessionName() : undefined;
 		const accentHex = sessionName ? getSessionAccentHex(sessionName, theme.sessionAccentInputs) : undefined;
-		const usedColor = getSessionAccentAnsi(accentHex) ?? theme.getFgAnsi("borderAccent");
+		const usedColor = getSessionAccentAnsi(accentHex, theme.colorMode) ?? theme.getFgAnsi("borderAccent");
 		const horizontal = theme.boxRound.horizontal;
 		const mode = effectiveSettings.contextLine ?? "embedded";
 		const pct = ctx.contextPercent;
@@ -2269,7 +2269,7 @@ export class StatusLineComponent implements Component {
 		const overflowColor = theme.getFgAnsi("error");
 		const rawAccentHex = accentHex ?? theme.getColorHex("borderAccent");
 		const dimmedAccentHex = adjustHsv(rawAccentHex, { s: 0.7, v: 0.75 });
-		const thresholdColor = getSessionAccentAnsi(dimmedAccentHex) ?? usedColor;
+		const thresholdColor = getSessionAccentAnsi(dimmedAccentHex, theme.colorMode) ?? usedColor;
 
 		let out = "\x1b[49m";
 		let activeColor = "";

@@ -1,4 +1,6 @@
 import { hexToOklch, oklchCusp, oklchToHex, relativeLuminance } from "@oh-my-pi/pi-utils";
+import { colorToAnsi } from "../modes/theme/color";
+import type { ColorMode } from "../modes/theme/schema";
 
 /**
  * Derive a stable 32-bit hash from a string using djb2.
@@ -242,10 +244,12 @@ export function getSessionAccentHex(name: string, theme: SessionAccentTheme): st
 }
 
 /**
- * Convert a hex accent color to an ANSI-16m foreground escape sequence.
- * Returns `undefined` if `hex` is nullish or Bun.color conversion fails.
+ * Convert a hex accent color to an ANSI foreground sequence at the active
+ * theme's color depth. Terminals that only support indexed color must never
+ * receive 24-bit SGR: older Terminal.app versions reinterpret its RGB channel
+ * values as standalone attributes and can turn the accent into a background.
  */
-export function getSessionAccentAnsi(hex: string | undefined): string | undefined {
+export function getSessionAccentAnsi(hex: string | undefined, mode: ColorMode): string | undefined {
 	if (!hex) return undefined;
-	return Bun.color(hex, "ansi-16m") ?? undefined;
+	return colorToAnsi(hex, mode);
 }

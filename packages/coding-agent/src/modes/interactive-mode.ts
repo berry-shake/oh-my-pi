@@ -2176,7 +2176,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			const accentEnabled = !isSettingsInitialized() || settings.get("statusLine.sessionAccent") !== false;
 			const sessionName = accentEnabled ? this.sessionManager.getSessionName() : undefined;
 			const hex = sessionName ? getSessionAccentHex(sessionName, theme.sessionAccentInputs) : undefined;
-			const ansi = getSessionAccentAnsi(hex);
+			const ansi = getSessionAccentAnsi(hex, theme.colorMode);
 			if (ansi) {
 				this.editor.borderColor = (str: string) => `${ansi}${str}\x1b[39m`;
 			} else {
@@ -5163,8 +5163,8 @@ export class InteractiveMode implements InteractiveModeContext {
 			return this.#cacheWorkingMessageAccent(key, undefined);
 		}
 		const hex = getSessionAccentHex(key.sessionName, theme.sessionAccentInputs);
-		const main = getSessionAccentAnsi(hex);
-		const dim = getSessionAccentAnsi(adjustHsv(hex, { s: 0.55, v: 0.65 }));
+		const main = getSessionAccentAnsi(hex, theme.colorMode);
+		const dim = getSessionAccentAnsi(adjustHsv(hex, { s: 0.55, v: 0.65 }), theme.colorMode);
 		return this.#cacheWorkingMessageAccent(key, main && dim ? { main, dim } : undefined);
 	}
 
