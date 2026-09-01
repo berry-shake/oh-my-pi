@@ -4,7 +4,7 @@ on:
    workflow_dispatch:
       inputs:
          tag:
-            description: Existing v* tag to build and publish
+            description: Existing mod-v* tag to build and publish
             required: true
             type: string
 
@@ -31,8 +31,12 @@ jobs:
            run: |
               set -euo pipefail
               version="$(jq -r .version packages/coding-agent/package.json)"
-              test "$RELEASE_TAG" = "v$version"
+              upstream_tag="v$version"
+              test "$RELEASE_TAG" = "mod-$upstream_tag"
               test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$RELEASE_TAG")"
+              upstream_commit="$(git ls-remote https://github.com/can1357/oh-my-pi.git "refs/tags/$upstream_tag" "refs/tags/$upstream_tag^{}" | tail -n 1 | cut -f 1)"
+              test -n "$upstream_commit"
+              test "$(git rev-list -n 1 "$upstream_tag")" = "$upstream_commit"
 
    build:
       name: Build ${{ matrix.target_id }}
@@ -182,14 +186,17 @@ jobs:
                 LICENSE \
                 THIRD-PARTY-NOTICES.txt
          - name: Generate release notes
+           id: release
            shell: bash
            env:
               GH_TOKEN: ${{ github.token }}
-              RELEASE_TAG: ${{ inputs.tag }}
            run: |
               set -euo pipefail
+              version="$(jq -r .version packages/coding-agent/package.json)"
+              upstream_tag="v$version"
+              echo "name=$upstream_tag (mod)" >> "$GITHUB_OUTPUT"
               {
-                 echo "Fork release based on [upstream $RELEASE_TAG](https://github.com/can1357/oh-my-pi/releases/tag/$RELEASE_TAG)."
+                 echo "Fork release based on [upstream $upstream_tag](https://github.com/can1357/oh-my-pi/releases/tag/$upstream_tag)."
                  echo
                  echo "## Fork changes"
                  echo
@@ -197,13 +204,13 @@ jobs:
                  echo
                  echo "---"
                  echo
-                 gh release view "$RELEASE_TAG" --repo can1357/oh-my-pi --json body --jq .body
+                 gh release view "$upstream_tag" --repo can1357/oh-my-pi --json body --jq .body
               } > release-notes.md
          - name: Create GitHub Release
            uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
            with:
               tag_name: ${{ inputs.tag }}
-              name: ${{ inputs.tag }}
+              name: ${{ steps.release.outputs.name }}
               body_path: release-notes.md
               files: |
                  packages/coding-agent/binaries/omp-*
