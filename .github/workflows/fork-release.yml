@@ -198,9 +198,10 @@ jobs:
               {
                  echo "Fork release based on [upstream $upstream_tag](https://github.com/can1357/oh-my-pi/releases/tag/$upstream_tag)."
                  echo
-                 echo "## Fork changes"
+                 echo "## Fork status"
                  echo
-                 echo "- Fixed status and composer colors turning into solid accent-colored backgrounds in Terminal.app versions without 24-bit color support."
+                 echo "- Package versions and upstream tag positions are unchanged."
+                 echo "- The Terminal.app session-accent fix previously carried by this fork is included upstream."
                  echo
                  echo "---"
                  echo
