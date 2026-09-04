@@ -35,7 +35,7 @@ function sessionAccentAnsi(ctx: SegmentContext): string | undefined {
 	if (ctx.sessionAccent === false) return undefined;
 	const name = ctx.session?.sessionManager?.getSessionName() || ctx.previewTitle;
 	if (!name) return undefined;
-	return getSessionAccentAnsi(getSessionAccentHex(name, theme.sessionAccentInputs), theme.colorMode);
+	return getSessionAccentAnsi(getSessionAccentHex(name, theme.sessionAccentInputs));
 }
 /**
  * `theme.fg` for accent-role text: the hash-derived session accent when

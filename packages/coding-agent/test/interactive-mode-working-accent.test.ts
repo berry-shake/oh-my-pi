@@ -29,7 +29,7 @@ function defined<T>(value: T | undefined): T {
  */
 function accentGlyphAnsi(sessionName: string): string {
 	const hex = sessionColor.getSessionAccentHex(sessionName, theme.sessionAccentInputs);
-	return defined(sessionColor.getSessionAccentAnsi(adjustHsv(hex, { s: 0.55, v: 0.65 }), theme.colorMode));
+	return defined(sessionColor.getSessionAccentAnsi(adjustHsv(hex, { s: 0.55, v: 0.65 })));
 }
 
 async function createHarness(sessionName: string): Promise<Harness> {

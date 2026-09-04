@@ -191,10 +191,6 @@ export class Theme {
 		}
 		this.#spinnerFramesOverrides = spinnerFramesOverrides;
 	}
-	/** Color depth used by every ANSI sequence emitted for this theme. */
-	get colorMode(): ColorMode {
-		return this.mode;
-	}
 
 	/** True when the active theme has a light status-line background. */
 	get isLight(): boolean {

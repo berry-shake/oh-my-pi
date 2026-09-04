@@ -79,8 +79,8 @@ describe("status line brand fade", () => {
 	it("fades the brand from dim into the accent when a turn starts", () => {
 		let now = 1_000_000;
 		vi.spyOn(Date, "now").mockImplementation(() => now);
-		const dimAnsi = getSessionAccentAnsi(theme.getColorHex("dim"), theme.colorMode);
-		const accentAnsi = getSessionAccentAnsi(theme.getColorHex("accent"), theme.colorMode);
+		const dimAnsi = getSessionAccentAnsi(theme.getColorHex("dim"));
+		const accentAnsi = getSessionAccentAnsi(theme.getColorHex("accent"));
 		if (!dimAnsi || !accentAnsi) throw new Error("expected resolvable dim/accent theme colors");
 		const component = makeComponent();
 		try {
@@ -114,8 +114,8 @@ describe("status line brand fade", () => {
 	it("fades back to dim from the on-screen accent when the turn ends", () => {
 		let now = 2_000_000;
 		vi.spyOn(Date, "now").mockImplementation(() => now);
-		const dimAnsi = getSessionAccentAnsi(theme.getColorHex("dim"), theme.colorMode);
-		const accentAnsi = getSessionAccentAnsi(theme.getColorHex("accent"), theme.colorMode);
+		const dimAnsi = getSessionAccentAnsi(theme.getColorHex("dim"));
+		const accentAnsi = getSessionAccentAnsi(theme.getColorHex("accent"));
 		if (!dimAnsi || !accentAnsi) throw new Error("expected resolvable dim/accent theme colors");
 		const component = makeComponent();
 		try {
