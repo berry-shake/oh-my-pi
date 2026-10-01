@@ -5,6 +5,8 @@
 ### Fixed
 
 - Fixed missing Apple Foundation Models support in fork macOS Apple Silicon release binaries.
+- Fixed fork macOS Apple Silicon releases failing after the Apple Foundation Models packaging update.
+
 ## [18.4.6] - 2026-10-01
 
 ### Added
