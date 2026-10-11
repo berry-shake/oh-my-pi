@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed native-addon embedding tests failing on macOS when temporary directory paths contain symlinks.
+
 ## [18.8.8] - 2026-10-10
 
 ### Changed
