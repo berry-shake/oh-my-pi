@@ -51,6 +51,8 @@ export const RUNNER_APIS = [
 	"web-search",
 	"typesafe",
 	"openrouter-decisions",
+	"openai-decisions",
+	"workers-ai-systemone",
 	"openai-images",
 	"openrouter-images",
 	"xai-tts",
@@ -65,6 +67,8 @@ export const RUNNER_API_KINDS: Record<Exclude<(typeof RUNNER_APIS)[number], "loc
 	"web-search": "search",
 	typesafe: "judge",
 	"openrouter-decisions": "judge",
+	"openai-decisions": "judge",
+	"workers-ai-systemone": "judge",
 	"openai-images": "image",
 	"openrouter-images": "image",
 	"xai-tts": "tts",
@@ -609,6 +613,14 @@ export interface AnthropicCompat {
 	 * contract instead. Default: false.
 	 */
 	firstPartyProvider?: boolean;
+	/**
+	 * Whether the provider honors Claude Code's `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS`
+	 * kill switch, which withholds pre-release fields (`context_management`, beta
+	 * tool fields, task budgets, structured-output format, `thinking.block_binding`,
+	 * server compaction) with their betas. Rule-owned on the
+	 * provider whose `ANTHROPIC_*` env routing Claude Code shares. Default: false.
+	 */
+	honorsClaudeCodeBetaKillSwitch?: boolean;
 	/**
 	 * Whether requests may carry `output_config.effort` (and its effort beta
 	 * header). Vertex AI rejects the field/header. Default: true.

@@ -242,6 +242,7 @@ export const AXES: Readonly<Record<string, AxisDef>> = {
 	"escape-builtin-tool-names": wire("escapeBuiltinToolNames", ["anthropic"]),
 	"fast-mode": wire("fastMode", ["anthropic"]),
 	"first-party-provider": wire("firstPartyProvider", ["anthropic"]),
+	"honors-claude-code-beta-kill-switch": wire("honorsClaudeCodeBetaKillSwitch", ["anthropic"]),
 	"inject-claude-code-instruction": wire("injectClaudeCodeInstruction", ["anthropic"]),
 	"max-image-dimension": wire("maxImageDimension", ["anthropic"]),
 	"max-image-payload-bytes": wire("maxImagePayloadBytes", ["anthropic"]),
@@ -406,6 +407,11 @@ export const AXES: Readonly<Record<string, AxisDef>> = {
 	"image-tokenization": { key: "imageTokenization", set: "catalog", shape: "object" },
 	"image-model": { key: "imageModel", set: "catalog", shape: "scalar" },
 	"inline-image-byte-budget": { key: "inlineImageByteBudget", set: "catalog", shape: "scalar" },
+	/**
+	 * Most questions one System One judgment request may carry; the judge
+	 * splits larger requests. Unassigned: the endpoint takes any batch size.
+	 */
+	"judgment-questions-max": { key: "judgmentQuestionsMax", set: "catalog", shape: "scalar" },
 	"limits-patch": { key: "limitsPatch", set: "catalog", shape: "object" },
 	"long-context-cost": { key: "longContext", set: "catalog", shape: "object" },
 	"prompt-cache": { key: "promptCache", set: "catalog", shape: "object" },
