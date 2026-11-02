@@ -228,14 +228,12 @@ jobs:
               done
               test -s packages/browser-relay/dist/omp-browser-relay-extension.zip
               test -s LICENSE
-              test -s THIRD-PARTY-NOTICES.txt
          - name: Generate checksums
            run: |
               bun run ci:release:checksums SHA256SUMS.txt \
                 packages/coding-agent/binaries/omp-* \
                 packages/browser-relay/dist/omp-browser-relay-extension.zip \
-                LICENSE \
-                THIRD-PARTY-NOTICES.txt
+                LICENSE
          - name: Generate release notes
            id: release
            shell: bash
@@ -268,5 +266,4 @@ jobs:
                  packages/coding-agent/binaries/omp-*
                  packages/browser-relay/dist/omp-browser-relay-extension.zip
                  LICENSE
-                 THIRD-PARTY-NOTICES.txt
                  SHA256SUMS.txt
