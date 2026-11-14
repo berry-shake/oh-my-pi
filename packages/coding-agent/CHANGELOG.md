@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Fixed macOS language servers missing edits to recently created files and receiving spurious directory creation notifications.
 - Fixed missing Apple Foundation Models support in fork macOS Apple Silicon release binaries.
 - Fixed fork macOS Apple Silicon releases failing after the Apple Foundation Models packaging update.
 - Fixed fork release builds and macOS binary signing after the upstream build update.

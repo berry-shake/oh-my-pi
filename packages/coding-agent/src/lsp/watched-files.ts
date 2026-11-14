@@ -260,8 +260,8 @@ export class WatchedFilesForwarder {
 	#delivery: Promise<void> = Promise.resolve();
 	/** Paths the client reported itself, with their size and mtime then (undefined: absent). */
 	readonly #announced = new Map<string, { at: number; snapshot: Promise<string | undefined> }>();
-	/** Creations and deletions delivered lately, by case-folded path: a repeat of one is redundant. */
-	readonly #reported = new Map<string, { type: FileChangeType; at: number }>();
+	/** Recent existence and disk state: repeated macOS "rename" events may actually be file edits. */
+	readonly #reported = new Map<string, { type: FileChangeType; at: number; snapshot: string | undefined }>();
 	#reportedPrunedAt = 0;
 	/** How far the file system's clock was last seen behind ours (network drives); rescans look back that much further. */
 	#clockLag = 0;
@@ -838,7 +838,12 @@ export class WatchedFilesForwarder {
 			const after = change.after ?? !!stat;
 			// A "rename" seen first: present now means it appeared, gone means it went.
 			const before = change.before ?? !after;
-			if (after && !before && change.directory === undefined && stat?.isDirectory()) this.#directoryAppeared(target);
+			if (after && !before && change.directory === undefined && stat?.isDirectory()) {
+				this.#directoryAppeared(target);
+				// An ambiguous rename also arrives when an existing directory's entries change.
+				// Its files are reported by the rescan; do not invent a directory creation.
+				continue;
+			}
 			if (!after && change.directory) this.#directoryVanished(target);
 			if (kinds === 0) continue;
 			let type: FileChangeType;
@@ -853,13 +858,26 @@ export class WatchedFilesForwarder {
 			} else if (after) type = FileChangeType.Created;
 			else if (before) type = FileChangeType.Deleted;
 			else continue;
-			// A creation after a creation (a rescan repeating an event, or the reverse) says nothing new.
+			// FSEvents may repeat "rename" for edits to a recently created file. Only an
+			// unchanged snapshot is a duplicate creation; a new snapshot is a file change.
 			const key = foldCase(path.resolve(target));
-			if (type !== FileChangeType.Changed) {
-				const last = this.#reported.get(key);
-				this.#reported.set(key, { type, at: now });
-				if (last?.type === type && now - last.at <= REPORTED_TTL_MS) continue;
+			const last = this.#reported.get(key);
+			const snapshot = snapshotOf(stat);
+			if (type !== FileChangeType.Changed && last?.type === type && now - last.at <= REPORTED_TTL_MS) {
+				if (
+					type === FileChangeType.Created &&
+					snapshot !== undefined &&
+					last.snapshot !== undefined &&
+					snapshot !== last.snapshot
+				) {
+					type = FileChangeType.Changed;
+				} else continue;
 			}
+			this.#reported.set(key, {
+				type: type === FileChangeType.Changed ? FileChangeType.Created : type,
+				at: now,
+				snapshot: snapshot ?? (last?.type === type ? last.snapshot : undefined),
+			});
 			if (!(kinds & (1 << (type - 1)))) continue;
 			if (await this.#alreadyAnnounced(target, stat)) continue;
 			changes.push({ uri: fileToUri(target), type });
