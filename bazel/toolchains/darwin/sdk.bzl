@@ -1,6 +1,6 @@
 """Repository rule materializing the macOS SDK from Apple's Command Line Tools.
 
-Downloads the newest-SDK package of the Command Line Tools for Xcode 27.0
+Downloads the newest-SDK package of the Command Line Tools for Xcode 27.2
 (`CLTools_macOSNMOS_SDK.pkg`) from Apple's software update CDN — the
 unauthenticated catalog `softwareupdate` installs the Command Line Tools from —
 and unpacks its MacOSX27.2.sdk with extract_pkg.py, so linux exec hosts get
@@ -16,6 +16,8 @@ opts into the repo contents cache.
 
 Bumping: the catalog lists every Command Line Tools release; the product whose
 `.dist` names "Command Line Tools for Xcode <version>" carries the package.
+Apple drops superseded packages from the CDN (GET returns 403), so a fetch
+failing with 403 means the pin needs bumping.
 
     curl -fsSL https://swscan.apple.com/content/catalogs/others/index-27-26-15-14-13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog \\
       | grep -o 'https://swcdn[^<]*CLTools_macOSNMOS_SDK.pkg'
